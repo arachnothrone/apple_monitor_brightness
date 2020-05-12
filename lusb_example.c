@@ -22,6 +22,7 @@ static void print_devs(libusb_device **devs)
 	libusb_device *dev;
 	int i = 0, j = 0;
 	uint8_t path[8]; 
+	int status;
 
 	while ((dev = devs[i++]) != NULL) {
 		struct libusb_device_descriptor desc;
@@ -29,7 +30,7 @@ static void print_devs(libusb_device **devs)
 		unsigned char prd[100];
 		unsigned char serNum[20]={0};
 
-		libusb_open(dev, &devh);
+		status = libusb_open(dev, &devh);
 		int r = libusb_get_device_descriptor(dev, &desc);
 		if (r < 0) {
 			fprintf(stderr, "failed to get device descriptor");
@@ -49,10 +50,10 @@ static void print_devs(libusb_device **devs)
 			/*serNum[8] = '\t'; */serNum[8] = '\0';
 		}
 
-		printf("%04x:%04x (bus %3d, device %d); bcdDevice:%04x, S/N(%d):%s\t MFG:%s, PRODUCT:%s ",
+		printf("%04x:%04x (bus %3d, device %d); bcdDevice:%04x, S/N(%d):%s\t MFG:%s, PRODUCT:%s, status:%d ",
 			desc.idVendor, desc.idProduct, 
 			libusb_get_bus_number(dev), libusb_get_device_address(dev), 
-			desc.bcdDevice, desc.iSerialNumber, serNum, mfg, prd);
+			desc.bcdDevice, desc.iSerialNumber, serNum, mfg, prd, status);
 
 		r = libusb_get_port_numbers(dev, path, sizeof(path));
 		if (r > 0) {
