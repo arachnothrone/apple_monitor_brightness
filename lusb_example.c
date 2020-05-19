@@ -89,12 +89,16 @@ int main(void)
 	print_devs(devs);
 	libusb_free_device_list(devs, 1);
 
-    // r = find_dpfp_device();
-	// printf("2. FIND: %d\n", r);
-	// if (r < 0) {
-	// 	fprintf(stderr, "Could not find/open device\n");
-	// 	// goto out;
-	// }
+    r = find_dpfp_device();
+	printf("2. FIND: %d\n", r);
+	if (r < 0) {
+		fprintf(stderr, "Could not find/open device\n");
+		// goto out;
+	}
+
+	struct libusb_config_descriptor *conf;
+	libusb_get_active_config_descriptor(devh, )
+	//r = libusb_detatch_driver(devh, )
 
 	// r = libusb_claim_interface(devh, 0);
 	// printf("3. CLAIM: %d\n", r);
