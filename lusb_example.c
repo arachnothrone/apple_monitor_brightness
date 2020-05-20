@@ -122,10 +122,10 @@ int main(void)
 	r = libusb_kernel_driver_active(devh, 0);
 	printf("krnl active: %d\n", r);
 	//libusb_get_active_config_descriptor(devh, )
-	r = libusb_detach_kernel_driver(devh, 1);
+	r = libusb_detach_kernel_driver(devh, 0);
 	printf("detach: %d\n", r);
 
-	r = libusb_claim_interface(devh, 1);
+	r = libusb_claim_interface(devh, 0);
 	printf("3. CLAIM: %d\n", r);
 	// if (r < 0) {
 	// 	fprintf(stderr, "usb_claim_interface error %d\n", r);
