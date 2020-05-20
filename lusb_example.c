@@ -9,6 +9,7 @@
 #include "libusb-1.0/libusb.h"
 
 static struct libusb_device_handle *devh = NULL;
+static libusb_device* selectedDev;
 
 static int find_dpfp_device(void)
 {
@@ -35,6 +36,12 @@ static void print_devs(libusb_device **devs)
 		if (r < 0) {
 			fprintf(stderr, "failed to get device descriptor");
 			return;
+		}
+
+		if (desc.idProduct == 0x9226)
+		{
+			selectedDev = dev;
+			printf("selected: %0x-%0x\n", libusb_get_bus_number(selectedDev), libusb_get_device_address(selectedDev));
 		}
 
 		libusb_get_string_descriptor_ascii(devh, desc.iManufacturer, mfg, 100);
@@ -98,7 +105,9 @@ int main(void)
 
 	//struct libusb_config_descriptor *conf;
 	int conf;
-	r=libusb_get_configuration(devh, &conf);
+	struct libusb_config_descriptor *cfg;
+	//r=libusb_get_configuration(devh, &conf);
+	r=libusb_get_active_config_descriptor(selectedDev, &cfg);
 	printf("conf=%d res=%d\n", conf, r);
 	//libusb_get_active_config_descriptor(devh, )
 	//r = libusb_detatch_driver(devh, )
