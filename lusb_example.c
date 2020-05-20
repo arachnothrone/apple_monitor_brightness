@@ -41,7 +41,7 @@ static void print_devs(libusb_device **devs)
 		if (desc.idProduct == 0x9226)
 		{
 			selectedDev = dev;
-			printf("selected: %0x-%0x\n", libusb_get_bus_number(selectedDev), libusb_get_device_address(selectedDev));
+			printf("selected: %d - %d\n", libusb_get_bus_number(selectedDev), libusb_get_device_address(selectedDev));
 		}
 
 		libusb_get_string_descriptor_ascii(devh, desc.iManufacturer, mfg, 100);
@@ -106,14 +106,27 @@ int main(void)
 	//struct libusb_config_descriptor *conf;
 	int conf;
 	struct libusb_config_descriptor *cfg;
-	//r=libusb_get_configuration(devh, &conf);
-	r=libusb_get_active_config_descriptor(selectedDev, &cfg);
-	printf("conf=%d res=%d\n", conf, r);
-	//libusb_get_active_config_descriptor(devh, )
-	//r = libusb_detatch_driver(devh, )
+	struct libusb_device_descriptor devDesc;
 
-	// r = libusb_claim_interface(devh, 0);
-	// printf("3. CLAIM: %d\n", r);
+	//r=libusb_get_configuration(devh, &conf);
+
+	r = libusb_open(selectedDev, &devh);
+	printf("open: %d\n", r);
+
+	r = libusb_get_active_config_descriptor(selectedDev, &cfg);
+	printf("conf=%d res=%d bNumInterfaces=%d\n", conf, r, cfg->bNumInterfaces);
+	
+	r = libusb_get_device_descriptor(selectedDev, &devDesc);
+	printf("descr: %d %0x, %0x, %0x\n", r, devDesc.idVendor, devDesc.idProduct, devDesc.bcdDevice);
+
+	r = libusb_kernel_driver_active(devh, 0);
+	printf("krnl active: %d\n", r);
+	//libusb_get_active_config_descriptor(devh, )
+	r = libusb_detach_kernel_driver(devh, 1);
+	printf("detach: %d\n", r);
+
+	r = libusb_claim_interface(devh, 1);
+	printf("3. CLAIM: %d\n", r);
 	// if (r < 0) {
 	// 	fprintf(stderr, "usb_claim_interface error %d\n", r);
 	// }
