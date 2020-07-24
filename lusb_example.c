@@ -122,6 +122,12 @@ int main(void)
 	r = libusb_kernel_driver_active(devh, 0);
 	printf("krnl active: %d\n", r);
 	//libusb_get_active_config_descriptor(devh, )
+	
+	/* detach kernel driver: not supported on MacOS:
+	 * returns: LIBUSB_ERROR_NOT_SUPPORTED = -12
+	 * some info here: https://stackoverflow.com/questions/15102168/libusb-claim-interface-fails-on-mac-os-x-mountain-lion/29934989
+	 * sudo kextunload -b com.apple.driver.AppleUSBCDC
+	 * */
 	r = libusb_detach_kernel_driver(devh, 0);
 	printf("detach: %d\n", r);
 
